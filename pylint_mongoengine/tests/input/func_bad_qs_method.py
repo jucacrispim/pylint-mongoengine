@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable=missing-docstring, no-self-use, no-self-argument
+# pylint: disable=missing-docstring, too-few-public-methods
+# pylint: disable=no-self-use, no-self-argument
 
 from mongoengine import Document
 from mongoengine.queryset import queryset_manager
@@ -26,36 +27,30 @@ from mongomotor import Document as MMDocument
 class TestDoc(Document):
 
     @queryset_manager
-    def custom_qs(cls_doc, queryset):
+    def custom_qs_manager(cls_doc, queryset):
         return queryset
 
-    def filter_qs(self):
-        type(self).custom_qs(a=1)
+    def a_bad_qs_method(self):
+        return type(self).custom_qs_manager.bad_method()  # [no-member]
 
-    def do_aggregate(self):
-        pipeline = [{}]
-        return type(self).custom_qs.aggregate(*pipeline)
 
-    def do_update(self):
-        type(self).objects.update(field='a')
+class AnotherTestDoc(Document):
+
+    def a_bad_qs_method(self):
+        return type(self).objects.bad_method()  # [no-member]
 
 
 class MMTestDoc(MMDocument):
 
     @queryset_manager
-    def custom_qs(cls_doc, queryset):
+    def custom_qs_manager(cls_doc, queryset):
         return queryset
 
-    def filter_qs(self):
-        type(self).custom_qs(a=1)
+    def a_bad_qs_method(self):
+        return type(self).custom_qs_manager.bad_method()  # [no-member]
 
-    def do_aggregate(self):
-        pipeline = [{}]
-        return type(self).custom_qs.aggregate(*pipeline)
 
-    async def get_item(self):
-        queryset = type(self).custom_qs.order_by('-field').clone()
-        await queryset[0]
+class AnotherMMTestDoc(MMDocument):
 
-    async def do_update(self):
-        await type(self).objects.update(field='a')
+    def a_bad_qs_method(self):
+        return type(self).objects.bad_method()  # [no-member]

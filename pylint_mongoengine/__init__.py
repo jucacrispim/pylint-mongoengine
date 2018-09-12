@@ -16,86 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import re
-
-import astroid
-
-from pylint.checkers.utils import safe_infer
-from pylint.checkers.typecheck import TypeChecker
-from pylint_plugin_utils import suppress_message
-
-
-def _is_qs_manager(funcdef):
-    """Checks if a function definition is a queryset manager created
-    with the @queryset_manager decorator."""
-
-    decors = getattr(funcdef, 'decorators', None)
-    if decors:
-        for dec in decors.get_children():
-            try:
-                if dec.name == 'queryset_manager':
-                    return True
-            except AttributeError:
-                continue
-
-    return False
-
-
-def _is_call2manager(node):
-    called = safe_infer(node.func)
-    funcdef = getattr(called, '_proxied', None)
-    return _is_qs_manager(funcdef)
-
-
-def _is_manager_attribute(node):
-    for attr in node.get_children():
-        try:
-            inferred = safe_infer(attr)
-        except astroid.exceptions.InferenceError:
-            continue
-
-        funcdef = getattr(inferred, '_proxied', None)
-        if _is_qs_manager(funcdef):
-            return True
-
-    return False
-
-
-def add_transform(package_name):
-    """From pylint-django"""
-
-    def fake_module_builder():
-        transforms_dir = os.path.join(os.path.dirname(__file__), 'transforms')
-        fake_module_path = os.path.join(
-            transforms_dir, '%s.py' % re.sub(r'\.', '_', package_name))
-
-        with open(fake_module_path) as modulefile:
-            fake_module = modulefile.read()
-
-        return astroid.builder.AstroidBuilder(astroid.MANAGER).string_build(
-            fake_module)
-
-    astroid.register_module_extender(astroid.MANAGER, package_name,
-                                     fake_module_builder)
-
-
-def suppress_qs_decorator_messages(linter):
-    suppress_message(linter, TypeChecker.visit_call, 'unexpected-keyword-arg',
-                     _is_call2manager)
-    suppress_message(linter, TypeChecker.visit_call, 'no-value-for-parameter',
-                     _is_call2manager)
-    suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
-                     _is_manager_attribute)
+from pylint_mongoengine.checkers.mongoengine import MongoEngineChecker
+from pylint_mongoengine.supression import suppress_qs_decorator_messages
+from pylint_mongoengine.transforms import add_transform
 
 
 def register(linter):
-    """
-    Registering additional checkers.
-
-    However, we will also use it to amend existing checker config.
+    """Add the needed transformations and supressions.
     """
 
+    linter.register_checker(MongoEngineChecker(linter))
     add_transform('mongoengine')
     add_transform('mongomotor')
     suppress_qs_decorator_messages(linter)

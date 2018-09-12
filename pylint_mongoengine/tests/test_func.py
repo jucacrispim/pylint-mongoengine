@@ -1,34 +1,14 @@
 # -*- coding: utf-8 -*-
-# Copyright 2018 Juca Crispim <juca@poraodojuca.net>
 
-# This file is part of pylint-mongoengine.
-
-# pylint-mongoengine is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# pylint-mongoengine is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
+# from pylint-django
 
 import os
 import sys
+
 import pytest
 
 from pylint.test import test_functional
-# # because there's no __init__ file in pylint/test/
-# sys.path.append(os.path.join(os.path.dirname(pylint.__file__), 'test'))
-# import test_functional  # noqa: E402
 
-# # alter sys.path again because the tests now live as a subdirectory
-# # of pylint_django
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-# so we can find migrations
 sys.path.append(os.path.join(os.path.dirname(__file__), 'input'))
 
 
