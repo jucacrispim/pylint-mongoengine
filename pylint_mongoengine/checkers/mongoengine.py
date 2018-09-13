@@ -76,7 +76,7 @@ class MongoEngineChecker(BaseChecker):
         attr = next(node.get_children())
         meth = safe_infer(attr)
         if meth:
-            return
+            return False
 
         attr_self = safe_infer(attr.last_child())
         cls = getattr(attr_self, '_proxied', None)

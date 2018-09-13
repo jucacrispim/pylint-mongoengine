@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 
 from pylint_mongoengine.checkers.mongoengine import MongoEngineChecker
 
@@ -85,3 +85,43 @@ class TestMongoEngineChecker:
         self.checker.visit_attribute(Mock())
 
         assert self.checker.add_message.called is False
+
+    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer', Mock())
+    def test_visit_call_good_infer(self):
+        node = MagicMock()
+        r = self.checker.visit_call(node)
+        assert r is False
+
+    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
+           Mock(side_effect=[None, Mock()]))
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+           Mock(return_value=False))
+    def test_visit_call_no_subclass(self):
+        node = MagicMock()
+        self.checker.add_message = Mock()
+        self.checker.visit_call(node)
+        assert self.checker.add_message.called is False
+
+    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
+           Mock(side_effect=[None, Mock()]))
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+           Mock(return_value=True))
+    @patch('pylint_mongoengine.checkers.mongoengine.name_is_from_model',
+           Mock(return_value=True))
+    def test_visit_call_good_name(self):
+        node = MagicMock()
+        self.checker.add_message = Mock()
+        self.checker.visit_call(node)
+        assert self.checker.add_message.called is False
+
+    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
+           Mock(side_effect=[None, Mock()]))
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+           Mock(return_value=True))
+    @patch('pylint_mongoengine.checkers.mongoengine.name_is_from_model',
+           Mock(return_value=False))
+    def test_visit_call_subclass_bad_name(self):
+        node = MagicMock()
+        self.checker.add_message = Mock()
+        self.checker.visit_call(node)
+        assert self.checker.add_message.called is True

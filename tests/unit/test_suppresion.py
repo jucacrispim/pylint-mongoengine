@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, patch
 from pylint_mongoengine import suppression
 
 
@@ -41,3 +41,28 @@ def test_is_call2custom_manager():
     node._proxied = MagicMock()
     r = suppression._is_call2custom_manager(node)
     assert r is False
+
+
+def test_is_custom_manager_attribute_bad_name():
+    node = MagicMock()
+    node.attrname = 'not_from_qs'
+    r = suppression._is_custom_manager_attribute(node)
+    assert r is False
+
+
+@patch.object(suppression, '_is_custom_qs_manager', Mock(return_value=False))
+def test_is_custom_manager_attribute_no_qs_manager():
+    node = MagicMock()
+    node.attrname = 'filter'
+    node.get_children.return_value = [MagicMock()]
+    r = suppression._is_custom_manager_attribute(node)
+    assert r is False
+
+
+@patch.object(suppression, '_is_custom_qs_manager', Mock(return_value=True))
+def test_is_custom_manager_attribute_true():
+    node = MagicMock()
+    node.attrname = 'filter'
+    node.get_children.return_value = [MagicMock()]
+    r = suppression._is_custom_manager_attribute(node)
+    assert r is True
