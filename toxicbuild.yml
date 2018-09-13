@@ -1,0 +1,54 @@
+RUN_LINTER:  &RUN_LINTER
+  name: Run pylint
+  command: pylint pylint_mongoengine
+  warning_on_fail: true
+
+
+TESTS_CMD:  &TESTS_CMD
+  - name: Tests coverage
+    command: sh ./build-scripts/check_coverage.sh pylint_mongoengine 100
+    timeout: 10
+
+
+builders:
+  - name: python3.5
+    branches:
+      - master
+
+    plugins:
+      - name: python-venv
+        pyversion: python3.5
+
+    platform: python3.5
+
+    steps:
+      - <<: *RUN_LINTER
+      - <<: *TESTS_CMD
+
+  - name: python3.6
+    branches:
+      - master
+
+    plugins:
+      - name: python-venv
+        pyversion: python3.6
+
+    platform: python3.6
+
+    steps:
+      - <<: *RUN_LINTER
+      - <<: *TESTS_CMD
+
+  # - name: release
+  #   branches:
+  #     - release
+
+  #   plugins:
+  #     - name: python-venv
+  #       pyversion: python3.6
+
+  #   platform: python3.6
+
+  #   steps:
+  #     - <<: *TESTS_CMD
+  #     - <<: *UPLOAD_DOCS_CMD
