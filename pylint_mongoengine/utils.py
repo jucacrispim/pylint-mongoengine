@@ -7,13 +7,12 @@ from astroid.bases import Instance
 from astroid.nodes import ClassDef
 from astroid.exceptions import InferenceError
 
-
 qs_names = set()
 model_names = set()
 
 
 def name_is_from_qs(attrname):
-    global qs_names
+    global qs_names  # pylint: disable=global-statement
 
     if not qs_names:
         from mongoengine.queryset import QuerySet
@@ -23,7 +22,7 @@ def name_is_from_qs(attrname):
 
 
 def name_is_from_model(attrname):
-    global model_names
+    global model_names  # pylint: disable=global-statement
 
     if not model_names:
         from mongoengine import Document

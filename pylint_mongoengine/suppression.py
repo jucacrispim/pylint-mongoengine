@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-import astroid
-
 from pylint.checkers.typecheck import TypeChecker
 from pylint.checkers.utils import safe_infer
 from pylint_plugin_utils import suppress_message

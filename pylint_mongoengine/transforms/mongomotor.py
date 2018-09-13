@@ -21,7 +21,7 @@ from mongoengine.queryset.manager import QuerySetManager
 from mongomotor import Document as MMDocument
 
 
-class Document(MMDocument):  # pragma no cover
+class Document(MMDocument):
     _meta = {}
     objects = QuerySetManager()
 

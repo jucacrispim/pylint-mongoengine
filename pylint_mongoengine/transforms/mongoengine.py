@@ -21,7 +21,7 @@ from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
 from mongoengine.queryset.manager import QuerySetManager
 
 
-class Document(MEDocument):
+class Document(MEDocument):  # pylint: disable=duplicate-code
     _meta = {}
     objects = QuerySetManager()
 
