@@ -22,24 +22,24 @@ import re
 import astroid
 
 
+def fake_module_builder(package_name):
+    transforms_dir = os.path.join(os.path.dirname(__file__))
+    fake_module_path = os.path.join(
+        transforms_dir, '%s.py' % re.sub(r'\.', '_', package_name))
+
+    with open(fake_module_path) as modulefile:
+        fake_module = modulefile.read()
+
+    return astroid.builder.AstroidBuilder(astroid.MANAGER).string_build(
+        fake_module)
+
+
 def add_transform(package_name):
     """Reads the classes from the input/ directory and extends the
     original ones in asteroid.
 
     :param package_name: The package beeing changed.
     """
-    # tks pylint-django!
-
-    def fake_module_builder():
-        transforms_dir = os.path.join(os.path.dirname(__file__))
-        fake_module_path = os.path.join(
-            transforms_dir, '%s.py' % re.sub(r'\.', '_', package_name))
-
-        with open(fake_module_path) as modulefile:
-            fake_module = modulefile.read()
-
-        return astroid.builder.AstroidBuilder(astroid.MANAGER).string_build(
-            fake_module)
 
     astroid.register_module_extender(astroid.MANAGER, package_name,
-                                     fake_module_builder)
+                                     lambda: fake_module_builder(package_name))

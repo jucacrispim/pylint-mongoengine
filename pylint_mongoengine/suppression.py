@@ -32,7 +32,7 @@ def _is_custom_qs_manager(funcdef):
     if decors:
         for dec in decors.get_children():
             try:
-                if dec.name == 'queryset_manager':
+                if dec.name == 'queryset_manager':  # pragma no branch
                     return True
             except AttributeError:
                 continue
@@ -57,11 +57,7 @@ def _is_custom_manager_attribute(node):
         return False
 
     for attr in node.get_children():
-        try:
-            inferred = safe_infer(attr)
-        except astroid.exceptions.InferenceError:
-            continue
-
+        inferred = safe_infer(attr)
         funcdef = getattr(inferred, '_proxied', None)
         if _is_custom_qs_manager(funcdef):
             return True

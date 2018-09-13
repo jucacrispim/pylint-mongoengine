@@ -16,20 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
-from mongoengine.queryset.manager import QuerySetManager
-from mongomotor import Document as MMDocument
+from unittest.mock import patch
+from pylint_mongoengine import transforms
 
 
-class Document(MMDocument):  # pragma no cover
-    _meta = {}
-    objects = QuerySetManager()
+def test_fake_module_builder():
+    r = transforms.fake_module_builder('mongoengine')
+    assert r.body[3].name == 'Document'
 
-    id = None
-    pk = None
 
-    MultipleObjectsReturned = MultipleObjectsReturned
-    DoesNotExist = DoesNotExist
-
-    _data = {}
-    _changed_fields = {}
+@patch('pylint_mongoengine.transforms.astroid.register_module_extender')
+def test_add_transform(*args, **kwargs):
+    transforms.add_transform('mongomotor')
+    assert transforms.astroid.register_module_extender.called is True

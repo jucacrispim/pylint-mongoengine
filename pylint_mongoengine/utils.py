@@ -16,11 +16,7 @@ def name_is_from_qs(attrname):
     global qs_names
 
     if not qs_names:
-        try:
-            from mongoengine.queryset import QuerySet
-        except ImportError:
-            return False
-
+        from mongoengine.queryset import QuerySet
         qs_names = set(dir(QuerySet))
 
     return attrname in qs_names
@@ -30,11 +26,7 @@ def name_is_from_model(attrname):
     global model_names
 
     if not model_names:
-        try:
-            from mongoengine import Document
-        except ImportError:
-            return False
-
+        from mongoengine import Document
         model_names = set(dir(Document))
 
     return attrname in model_names
@@ -49,15 +41,16 @@ def node_is_subclass(cls, *subclass_names):
         return False
     for base_cls in cls.bases:
         try:
-            for inf in base_cls.inferred():
+            for inf in base_cls.inferred():  # pragma no branch
                 if inf.qname() in subclass_names:
                     return True
 
-                if inf != cls and node_is_subclass(inf, *subclass_names):
+                if inf != cls and node_is_subclass(  # pragma no branch
+                        inf, *subclass_names):
                     # check up the hierarchy in case we are a subclass of
                     # a subclass of a subclass ...
                     return True
-        except InferenceError:
+        except InferenceError:  # pragma no cover
             continue
 
     return False

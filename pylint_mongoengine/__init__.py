@@ -17,7 +17,7 @@
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
 from pylint_mongoengine.checkers.mongoengine import MongoEngineChecker
-from pylint_mongoengine.supression import suppress_qs_decorator_messages
+from pylint_mongoengine.suppression import suppress_qs_decorator_messages
 from pylint_mongoengine.transforms import add_transform
 
 

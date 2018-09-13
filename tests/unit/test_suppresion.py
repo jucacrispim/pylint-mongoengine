@@ -16,20 +16,28 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
-from mongoengine.queryset.manager import QuerySetManager
-from mongomotor import Document as MMDocument
+from unittest.mock import Mock, MagicMock
+from pylint_mongoengine import suppression
 
 
-class Document(MMDocument):  # pragma no cover
-    _meta = {}
-    objects = QuerySetManager()
+def test_is_custom_qs_ok():
+    funcdef = Mock()
+    dec = Mock()
+    dec.name = 'queryset_manager'
+    funcdef.decorators.get_children.return_value = [None, dec]
+    r = suppression._is_custom_qs_manager(funcdef)
+    assert r is True
 
-    id = None
-    pk = None
 
-    MultipleObjectsReturned = MultipleObjectsReturned
-    DoesNotExist = DoesNotExist
+def test_is_custom_qs_no_qs():
+    funcdef = Mock()
+    funcdef.decorators.get_children.return_value = []
+    r = suppression._is_custom_qs_manager(funcdef)
+    assert r is False
 
-    _data = {}
-    _changed_fields = {}
+
+def test_is_call2custom_manager():
+    node = MagicMock()
+    node._proxied = MagicMock()
+    r = suppression._is_call2custom_manager(node)
+    assert r is False

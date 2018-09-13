@@ -9,7 +9,7 @@ setup(
     url='https://github.com/jucacrispim/pylint-mongoengine',
     author='Juca Crispim',
     author_email='juca@poraodojuca.net',
-    description='A Pylint plugin to help Pylint understand the MongoEngine ODM',
+    description='A Pylint plugin to help Pylint understand the MongoEngine',
     long_description=LONG_DESCRIPTION,
     version='0.1',
     packages=find_packages(),

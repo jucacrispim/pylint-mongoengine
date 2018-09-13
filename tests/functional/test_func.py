@@ -9,8 +9,6 @@ import pytest
 
 from pylint.test import test_functional
 
-sys.path.append(os.path.join(os.path.dirname(__file__), 'input'))
-
 
 class PylintMongoEngineLintModuleTest(test_functional.LintModuleTest):
     """

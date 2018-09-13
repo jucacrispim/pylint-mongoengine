@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from astroid.nodes import Assign, AssignName, Call, Name
-from mongoengine.queryset.manager import QuerySetManager
 from pylint.checkers import BaseChecker
 from pylint.checkers.utils import check_messages, safe_infer
 from pylint.interfaces import IAstroidChecker
@@ -26,7 +24,10 @@ from pylint_mongoengine.utils import (node_is_subclass, name_is_from_qs,
                                       name_is_from_model)
 
 
-DOCUMENT_BASES = ('mongomotor.Document', 'mongoengine.Document')
+DOCUMENT_BASES = ('mongomotor.Document',
+                  'mongoengine.Document',
+                  'mongoengine.document.Document',
+                  'mongomotor.document.Document')
 
 
 class MongoEngineChecker(BaseChecker):
@@ -41,7 +42,6 @@ class MongoEngineChecker(BaseChecker):
                   'PyLint does not recognise checkers as being enabled unless'
                   '  they have at least one message which is not fatal...')
     }
-
 
     def _called_thru_default_qs(self, node):
         """Checks if an attribute is being accessed throught the default
