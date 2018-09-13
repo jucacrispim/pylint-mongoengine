@@ -7,7 +7,9 @@ from astroid.bases import Instance
 from astroid.nodes import ClassDef
 from astroid.exceptions import InferenceError
 
-qs_names = []
+
+qs_names = set()
+model_names = set()
 
 
 def name_is_from_qs(attrname):
@@ -19,9 +21,23 @@ def name_is_from_qs(attrname):
         except ImportError:
             return False
 
-        qs_names = dir(QuerySet)
+        qs_names = set(dir(QuerySet))
 
     return attrname in qs_names
+
+
+def name_is_from_model(attrname):
+    global model_names
+
+    if not model_names:
+        try:
+            from mongoengine import Document
+        except ImportError:
+            return False
+
+        model_names = set(dir(Document))
+
+    return attrname in model_names
 
 
 def node_is_subclass(cls, *subclass_names):

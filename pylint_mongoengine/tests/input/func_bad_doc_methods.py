@@ -25,10 +25,16 @@ from mongomotor import Document as MMDocument
 class TestDoc(Document):
 
     def bad_meth(self):
-        self.a_bad_one(something='bla')
+        self.a_bad_one(something='bla')  # [no-member]
+
+    def a_good_one(self):
+        self.bad_meth()
 
 
 class MMTestDoc(MMDocument):
 
     async def bad_meth(self):
-        await self.a_bad_one(something='bla')
+        await self.a_bad_one(something=self.bla)  # [no-member]
+
+    async def a_good_one(self):
+        await self.bad_meth()

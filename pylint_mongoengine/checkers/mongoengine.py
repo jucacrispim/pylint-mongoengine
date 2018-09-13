@@ -19,10 +19,14 @@
 from astroid.nodes import Assign, AssignName, Call, Name
 from mongoengine.queryset.manager import QuerySetManager
 from pylint.checkers import BaseChecker
-from pylint.checkers.utils import check_messages
+from pylint.checkers.utils import check_messages, safe_infer
 from pylint.interfaces import IAstroidChecker
 
-from pylint_mongoengine.utils import node_is_subclass, name_is_from_qs
+from pylint_mongoengine.utils import (node_is_subclass, name_is_from_qs,
+                                      name_is_from_model)
+
+
+DOCUMENT_BASES = ('mongomotor.Document', 'mongoengine.Document')
 
 
 class MongoEngineChecker(BaseChecker):
@@ -52,7 +56,7 @@ class MongoEngineChecker(BaseChecker):
             return False
 
         base_cls = last_child.last_child()
-        base_classes = ('mongomotor.Document', 'mongoengine.Document')
+        base_classes = DOCUMENT_BASES
         for cls in base_cls.inferred():
             if node_is_subclass(cls, *base_classes):
                 return True
@@ -65,3 +69,19 @@ class MongoEngineChecker(BaseChecker):
                 node.attrname):
             self.add_message('no-member', node=node, args=(
                 'QuerySet instance', 'objects', node.attrname, ''))
+
+    @check_messages('no-member')
+    def visit_call(self, node):
+
+        attr = next(node.get_children())
+        meth = safe_infer(attr)
+        if meth:
+            return
+
+        attr_self = safe_infer(attr.last_child())
+        cls = getattr(attr_self, '_proxied', None)
+
+        if node_is_subclass(cls, *DOCUMENT_BASES) and not name_is_from_model(
+                attr.attrname):
+            self.add_message('no-member', node=attr,
+                             args=('Document', cls.name, attr.attrname, ''))
