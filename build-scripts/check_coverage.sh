@@ -2,20 +2,25 @@
 
 echo "\nChecking coverage for Python code\n"
 
-coverage=`pytest --cov=$1 | grep TOTAL | sed 's/TOTAL\s*\w*\s*\w*\s*\w*\s*\w\s*//g' | cut -d'%' -f1`;
-ERROR=$?
+export PYTHONPATH=$PYTHONPATH:tests/functional/;
+
+OUT=`pytest --cov=$1`;
+coverage=`echo "$OUT" | grep TOTAL | sed 's/TOTAL\s*\w*\s*\w*\s*\w*\s*\w\s*//g' | cut -d'%' -f1`;
+
+ERROR=`echo "$OUT" | grep Failed`
 
 echo 'coverage was:' $coverage'%'
 
-if [ "$ERROR" != "0" ]
+if [ "$ERROR" != "" ]
 then
     if [ $coverage -eq $2 ]
     then
 	echo "But something went wrong";
-	coverage report -m
+	echo "$ERROR";
 	exit 1
     else
 	echo "And something went wrong"
+	echo "$ERROR";
 	coverage report -m
 	exit 1
     fi
