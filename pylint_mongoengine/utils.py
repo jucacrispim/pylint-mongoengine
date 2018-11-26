@@ -2,7 +2,7 @@
 
 # from pylint-django
 
-from astroid.util import YES
+# from astroid.util import YES
 from astroid.bases import Instance
 from astroid.nodes import ClassDef
 from astroid.exceptions import InferenceError
@@ -36,8 +36,8 @@ def node_is_subclass(cls, *subclass_names):
     if not isinstance(cls, (ClassDef, Instance)):
         return False
 
-    if cls.bases == YES:
-        return False
+    # if cls.bases == YES:
+    #     return False
     for base_cls in cls.bases:
         try:
             for inf in base_cls.inferred():  # pragma no branch

@@ -86,11 +86,3 @@ def test_node_is_subclass_bad_node():
     funcdef = module.body[0]
     r = utils.node_is_subclass(funcdef, *DOCUMENT_BASES)
     assert r is False
-
-
-def test_node_is_subclass_bases_yes():
-    module = astroid.parse(test_cls)
-    cls = module.body[0]
-    cls.bases = utils.YES
-    r = utils.node_is_subclass(cls, *DOCUMENT_BASES)
-    assert r is False

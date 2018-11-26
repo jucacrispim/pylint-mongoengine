@@ -1,4 +1,4 @@
-astroid==2.0.4
+astroid==2.1.0
 asyncblink==0.3.1
 atomicwrites==1.2.1
 attrs==18.2.0
