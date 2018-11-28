@@ -39,6 +39,20 @@ builders:
       - <<: *RUN_LINTER
       - <<: *TESTS_CMD
 
+  - name: python3.7
+    branches:
+      - master
+
+    plugins:
+      - name: python-venv
+        pyversion: python3.7
+
+    platform: python3.7
+
+    steps:
+      - <<: *RUN_LINTER
+      - <<: *TESTS_CMD
+
   # - name: release
   #   branches:
   #     - release
