@@ -72,13 +72,21 @@ class MongoEngineChecker(BaseChecker):
 
     @check_messages('no-member')
     def visit_call(self, node):
+        children = node.get_children()
+        if children is None:
+        	return False
 
-        attr = next(node.get_children())
+        attr = next(children)
         meth = safe_infer(attr)
         if meth:
             return False
 
-        attr_self = safe_infer(attr.last_child())
+        last_child = attr.last_child()
+
+        if last_child is None:
+            return False
+
+        attr_self = safe_infer(last_child)
         cls = getattr(attr_self, '_proxied', None)
 
         if node_is_subclass(cls, *DOCUMENT_BASES) and not name_is_from_model(
