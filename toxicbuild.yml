@@ -40,8 +40,6 @@ builders:
       - <<: *TESTS_CMD
 
   - name: python3.7
-    branches:
-      - master
 
     plugins:
       - name: python-venv
