@@ -11,11 +11,11 @@ setup(
     author_email='juca@poraodojuca.net',
     description='A Pylint plugin to help it understand MongoEngine',
     long_description=LONG_DESCRIPTION,
-    version='0.2.2',
+    version='0.2.3',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'pylint>=2.0', 'pylint-plugin-utils==0.4'
+        'pylint>=2.0', 'pylint-plugin-utils>=0.5'
     ],
     license='GPLv3',
     classifiers=[
