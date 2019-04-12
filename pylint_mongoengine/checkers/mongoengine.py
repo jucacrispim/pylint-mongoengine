@@ -21,7 +21,8 @@ from pylint.checkers.utils import check_messages, safe_infer
 from pylint.interfaces import IAstroidChecker
 
 from pylint_mongoengine.utils import (node_is_subclass, name_is_from_qs,
-                                      name_is_from_model)
+                                      name_is_from_model, node_is_doc_field,
+                                      is_field_method)
 
 
 DOCUMENT_BASES = ('mongomotor.Document',
@@ -63,15 +64,19 @@ class MongoEngineChecker(BaseChecker):
 
         return False
 
-    @check_messages('no-member')
-    def visit_attribute(self, node):
+    def check_qs_name(self, node):
         if self._called_thru_default_qs(node) and not name_is_from_qs(
                 node.attrname):
             self.add_message('no-member', node=node, args=(
                 'QuerySet instance', 'objects', node.attrname, ''))
 
     @check_messages('no-member')
+    def visit_attribute(self, node):
+        self.check_qs_name(node)
+
+    @check_messages('no-member')
     def visit_call(self, node):
+
         children = node.get_children()
 
         attr = next(children)

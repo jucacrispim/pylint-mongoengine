@@ -17,6 +17,9 @@
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
 from unittest.mock import Mock, MagicMock, patch
+
+import astroid
+
 from pylint_mongoengine import suppression
 
 

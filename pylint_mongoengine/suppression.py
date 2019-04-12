@@ -19,7 +19,7 @@
 from pylint.checkers.typecheck import TypeChecker
 from pylint.checkers.utils import safe_infer
 from pylint_plugin_utils import suppress_message
-from pylint_mongoengine.utils import name_is_from_qs
+from pylint_mongoengine.utils import name_is_from_qs, is_field_method
 
 
 def _is_custom_qs_manager(funcdef):
@@ -50,7 +50,6 @@ def _is_custom_manager_attribute(node):
     """
 
     attrname = node.attrname
-
     if not name_is_from_qs(attrname):
         return False
 
@@ -70,3 +69,8 @@ def suppress_qs_decorator_messages(linter):
                      _is_call2custom_manager)
     suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
                      _is_custom_manager_attribute)
+
+
+def suppress_fields_attrs_messages(linter):
+    suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
+                     is_field_method)

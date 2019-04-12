@@ -16,18 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from pylint_mongoengine.checkers.mongoengine import MongoEngineChecker
-from pylint_mongoengine.suppression import (suppress_qs_decorator_messages,
-                                            suppress_fields_attrs_messages)
-from pylint_mongoengine.transforms import add_transform
+# pylint: disable=missing-docstring, too-few-public-methods
+
+from mongoengine import Document
+from mongoengine.fields import StringField
 
 
-def register(linter):
-    """Add the needed transformations and supressions.
-    """
+class TestDoc(Document):
 
-    linter.register_checker(MongoEngineChecker(linter))
-    add_transform('mongoengine')
-    add_transform('mongomotor')
-    suppress_qs_decorator_messages(linter)
-    suppress_fields_attrs_messages(linter)
+    something = StringField()
+
+    def do_something(self):
+        return self.something.encode('utf-8')

@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
-# from pylint-django
-
-# from astroid.util import YES
 from astroid.bases import Instance
 from astroid.nodes import ClassDef
 from astroid.exceptions import InferenceError
+from pylint.checkers.utils import safe_infer
+
+FIELD_TYPES = {'mongoengine.fields.StringField': str(),
+               'mongoengine.fields.IntField': int(),
+               'mongoengine.fields.FloatField': float(),
+               'mongoengine.fields.ListField': list(),
+               'mongoengine.fields.DictField': dict()}
+
 
 qs_names = set()
 model_names = set()
@@ -51,5 +56,44 @@ def node_is_subclass(cls, *subclass_names):
                     return True
         except InferenceError:  # pragma no cover
             continue
+
+    return False
+
+
+def node_is_instance(inst, *cls_names):
+    if not isinstance(inst, Instance):
+        return False
+
+    if inst.qname() in cls_names:
+        return True
+    if node_is_subclass(inst, *cls_names):
+        return True
+    return False
+
+
+def node_is_doc_field(node):
+    inferred = safe_infer(node)
+    if not inferred:
+        return False
+
+    return node_is_instance(inferred, 'mongoengine.base.fields.BaseField',
+                            'mongoengine.base.fields.ComplexBaseField')
+
+
+def is_field_method(node):
+    """Checks if a call to a field instance method is valid. A call is
+    valid if the call is a method of the underlying type. So, in a StringField
+    the methods from str are valid, in a ListField the methods from list are
+    valid and so on..."""
+    name = node.attrname
+    parent = node.last_child()
+    inferred = safe_infer(parent)
+
+    if not inferred:
+        return False
+
+    for cls_name, inst in FIELD_TYPES.items():
+        if node_is_instance(inferred, cls_name) and hasattr(inst, name):
+            return True
 
     return False
