@@ -18,8 +18,6 @@
 
 from unittest.mock import Mock, MagicMock, patch
 
-import astroid
-
 from pylint_mongoengine import suppression
 
 
@@ -69,3 +67,23 @@ def test_is_custom_manager_attribute_true():
     node.get_children.return_value = [MagicMock()]
     r = suppression._is_custom_manager_attribute(node)
     assert r is True
+
+
+@patch.object(suppression, 'node_is_embedded_doc', Mock(return_value=True))
+@patch.object(suppression, 'node_is_embedded_doc_attr',
+              Mock(return_value=True))
+def test_is_embedded_doc_attr_true():
+    node = MagicMock()
+    r = suppression._is_embedded_doc_attr(node)
+
+    assert r is True
+
+
+@patch.object(suppression, 'node_is_embedded_doc', Mock(return_value=False))
+@patch.object(suppression, 'node_is_embedded_doc_attr',
+              Mock(return_value=True))
+def test_is_embedded_doc_attr_false():
+    node = MagicMock()
+    r = suppression._is_embedded_doc_attr(node)
+
+    assert r is False

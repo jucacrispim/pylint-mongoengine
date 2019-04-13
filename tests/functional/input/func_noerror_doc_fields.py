@@ -18,13 +18,23 @@
 
 # pylint: disable=missing-docstring, too-few-public-methods
 
-from mongoengine import Document
-from mongoengine.fields import StringField
+from mongoengine import Document, EmbeddedDocument
+from mongoengine.fields import StringField, EmbeddedDocumentField
+
+
+class EDoc(EmbeddedDocument):
+
+    def meth(self):
+        pass
 
 
 class TestDoc(Document):
 
     something = StringField()
+    otherthing = EmbeddedDocumentField(EDoc)
 
     def do_something(self):
         return self.something.encode('utf-8')
+
+    def do_other_thing(self):
+        return self.otherthing.meth()

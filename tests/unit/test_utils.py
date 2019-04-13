@@ -228,3 +228,79 @@ def test_node_is_doc_field_no_infer(mocker):
     r = utils.node_is_doc_field(parent)
 
     assert r is False
+
+
+test_doc_embedded_field = """
+from mongomotor import Document, EmbeddedDocument
+from mongomotor.fields import EmbeddedDocumentField
+
+
+class Edoc(EmbeddedDocument):
+
+    def meth(self):
+        pass
+
+class Doc(Document):
+    something = EmbeddedDocumentField(Edoc)
+
+    def do_bad_stuff(self):
+        return self.something.bad()
+
+    def do_stuff(self):
+        return self.something.meth()
+
+"""
+
+
+def test_node_is_embedded_doc():
+    m = astroid.parse(test_doc_embedded_field)
+    attr = m.body[3].last_child().last_child().value.last_child()
+    parent = attr.last_child()
+    r = utils.node_is_embedded_doc(parent)
+
+    assert r is True
+
+
+def test_get_node_parent_class():
+    m = astroid.parse(test_doc_embedded_field)
+    attr = m.body[3].last_child().last_child().value.last_child()
+    parent = attr.last_child()
+    cls = utils.get_node_parent_class(parent)
+
+    assert isinstance(cls, utils.ClassDef)
+
+
+def test_get_field_definition():
+    m = astroid.parse(test_doc_embedded_field)
+    attr = m.body[3].last_child().last_child().value.last_child()
+    parent = attr.last_child()
+    definition = utils.get_field_definition(parent)
+    real_def = m.body[3].body[0]
+
+    assert definition is real_def
+
+
+def test_get_field_embedded_doc():
+    m = astroid.parse(test_doc_embedded_field)
+    attr = m.body[3].last_child().last_child().value.last_child()
+    parent = attr.last_child()
+    cls = utils.get_field_embedded_doc(parent)
+    real_cls = m.body[2]
+
+    assert cls is real_cls
+
+
+def test_node_is_embedded_doc_attr_false():
+    m = astroid.parse(test_doc_embedded_field)
+    attr = m.body[3].body[1].last_child().last_child().last_child()
+    r = utils.node_is_embedded_doc_attr(attr)
+
+    assert r is False
+
+
+def test_node_is_embedded_doc_attr_true():
+    m = astroid.parse(test_doc_embedded_field)
+    attr = m.body[3].body[2].last_child().last_child().last_child()
+    r = utils.node_is_embedded_doc_attr(attr)
+
+    assert r is True

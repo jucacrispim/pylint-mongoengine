@@ -97,3 +97,56 @@ def is_field_method(node):
             return True
 
     return False
+
+
+def get_node_parent_class(node):
+    """Supposes that node is a mongoengine field in a class and tries to
+    get its parent class"""
+
+    while node.parent:  # pragma no branch
+        if isinstance(node, ClassDef):
+            return node
+
+        node = node.parent
+
+
+def node_is_embedded_doc(node):
+    cls_name = 'mongoengine.fields.EmbeddedDocumentField'
+    inferred = safe_infer(node)
+    if not inferred:
+        return False
+
+    return node_is_instance(inferred, cls_name)
+
+
+def get_field_definition(node):
+    """"node is a class attribute that is a mongoengine. Returns
+     the definition statement for the attribute
+    """
+
+    name = node.attrname
+    cls = get_node_parent_class(node)
+    definition = cls.lookup(name)[1][0].statement()
+    return definition
+
+
+def get_field_embedded_doc(node):
+    """Returns de ClassDef for the related embedded document in a
+    embedded document field."""
+
+    definition = get_field_definition(node)
+    cls_name = definition.last_child().last_child()
+    cls = next(cls_name.infer())
+    return cls
+
+
+def node_is_embedded_doc_attr(node):
+    """Checks if a node is a valid field or method in a embedded document.
+    """
+    embedded_doc = get_field_embedded_doc(node.last_child())
+    name = node.attrname
+    try:
+        embedded_doc.lookup(name)[1][0]
+        return True
+    except IndexError:
+        return False
