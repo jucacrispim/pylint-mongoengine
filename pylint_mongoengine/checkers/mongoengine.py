@@ -21,8 +21,7 @@ from pylint.checkers.utils import check_messages, safe_infer
 from pylint.interfaces import IAstroidChecker
 
 from pylint_mongoengine.utils import (node_is_subclass, name_is_from_qs,
-                                      name_is_from_model, node_is_doc_field,
-                                      is_field_method)
+                                      name_is_from_model)
 
 
 DOCUMENT_BASES = ('mongomotor.Document',
