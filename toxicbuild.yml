@@ -7,7 +7,7 @@ RUN_LINTER:  &RUN_LINTER
 TESTS_CMD:  &TESTS_CMD
   - name: Tests coverage
     command: sh ./build-scripts/check_coverage.sh pylint_mongoengine 100
-    timeout: 10
+    timeout: 60
 
 
 builders:
