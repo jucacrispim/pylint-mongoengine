@@ -2,15 +2,15 @@
 
 from setuptools import setup, find_packages
 
-LONG_DESCRIPTION = open('README.md').read()
+DESCRIPTION = 'A Pylint plugin to help it understand MongoEngine'
 
 setup(
     name='pylint-mongoengine',
     url='https://github.com/jucacrispim/pylint-mongoengine',
     author='Juca Crispim',
     author_email='juca@poraodojuca.net',
-    description='A Pylint plugin to help it understand MongoEngine',
-    long_description=LONG_DESCRIPTION,
+    description=DESCRIPTION,
+    long_description=DESCRIPTION,
     version='0.3.1',
     packages=find_packages(),
     include_package_data=True,
