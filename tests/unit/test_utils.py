@@ -240,8 +240,16 @@ class Edoc(EmbeddedDocument):
     def meth(self):
         pass
 
+
+class ReqEDoc(EmbeddedDocument):
+
+    def meth(self):
+        pass
+
+
 class Doc(Document):
     something = EmbeddedDocumentField(Edoc)
+    other = EmbeddedDocumentField(ReqEdoc, required=True)
 
     def do_bad_stuff(self):
         return self.something.bad()
@@ -254,7 +262,7 @@ class Doc(Document):
 
 def test_node_is_embedded_doc():
     m = astroid.parse(test_doc_embedded_field)
-    attr = m.body[3].last_child().last_child().value.last_child()
+    attr = m.body[4].last_child().last_child().value.last_child()
     parent = attr.last_child()
     r = utils.node_is_embedded_doc(parent)
 
@@ -263,7 +271,7 @@ def test_node_is_embedded_doc():
 
 def test_get_node_parent_class():
     m = astroid.parse(test_doc_embedded_field)
-    attr = m.body[3].last_child().last_child().value.last_child()
+    attr = m.body[4].last_child().last_child().value.last_child()
     parent = attr.last_child()
     cls = utils.get_node_parent_class(parent)
 
@@ -272,17 +280,17 @@ def test_get_node_parent_class():
 
 def test_get_field_definition():
     m = astroid.parse(test_doc_embedded_field)
-    attr = m.body[3].last_child().last_child().value.last_child()
+    attr = m.body[4].last_child().last_child().value.last_child()
     parent = attr.last_child()
     definition = utils.get_field_definition(parent)
-    real_def = m.body[3].body[0]
+    real_def = m.body[4].body[0]
 
     assert definition is real_def
 
 
 def test_get_field_embedded_doc():
     m = astroid.parse(test_doc_embedded_field)
-    attr = m.body[3].last_child().last_child().value.last_child()
+    attr = m.body[4].last_child().last_child().value.last_child()
     parent = attr.last_child()
     cls = utils.get_field_embedded_doc(parent)
     real_cls = m.body[2]
@@ -292,7 +300,7 @@ def test_get_field_embedded_doc():
 
 def test_node_is_embedded_doc_attr_false():
     m = astroid.parse(test_doc_embedded_field)
-    attr = m.body[3].body[1].last_child().last_child().last_child()
+    attr = m.body[4].body[2].last_child().last_child().last_child()
     r = utils.node_is_embedded_doc_attr(attr)
 
     assert r is False
@@ -300,7 +308,7 @@ def test_node_is_embedded_doc_attr_false():
 
 def test_node_is_embedded_doc_attr_true():
     m = astroid.parse(test_doc_embedded_field)
-    attr = m.body[3].body[2].last_child().last_child().last_child()
+    attr = list(m.body[4].body[3].last_child().last_child().get_children())[0]
     r = utils.node_is_embedded_doc_attr(attr)
 
     assert r is True

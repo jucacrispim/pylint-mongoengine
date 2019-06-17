@@ -135,7 +135,7 @@ def get_field_embedded_doc(node):
     embedded document field."""
 
     definition = get_field_definition(node)
-    cls_name = definition.last_child().last_child()
+    cls_name = list(definition.last_child().get_children())[1]
     cls = next(cls_name.infer())
     return cls
 
