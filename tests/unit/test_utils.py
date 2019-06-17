@@ -249,13 +249,13 @@ class ReqEDoc(EmbeddedDocument):
 
 class Doc(Document):
     something = EmbeddedDocumentField(Edoc)
-    other = EmbeddedDocumentField(ReqEdoc, required=True)
+    other = EmbeddedDocumentField(ReqEDoc, required=True)
 
     def do_bad_stuff(self):
         return self.something.bad()
 
     def do_stuff(self):
-        return self.something.meth()
+        return self.other.meth()
 
 """
 
@@ -283,7 +283,7 @@ def test_get_field_definition():
     attr = m.body[4].last_child().last_child().value.last_child()
     parent = attr.last_child()
     definition = utils.get_field_definition(parent)
-    real_def = m.body[4].body[0]
+    real_def = m.body[4].body[1]
 
     assert definition is real_def
 
@@ -293,7 +293,7 @@ def test_get_field_embedded_doc():
     attr = m.body[4].last_child().last_child().value.last_child()
     parent = attr.last_child()
     cls = utils.get_field_embedded_doc(parent)
-    real_cls = m.body[2]
+    real_cls = m.body[3]
 
     assert cls is real_cls
 
