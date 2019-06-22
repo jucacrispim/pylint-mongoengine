@@ -31,8 +31,10 @@ def _is_custom_qs_manager(funcdef):
     decors = getattr(funcdef, 'decorators', None)
     if decors:
         for dec in decors.get_children():
+            attrname = 'name' if hasattr(dec, 'name') else 'attrname'
+            qs_name = 'queryset_manager'
             try:
-                if dec.name == 'queryset_manager':  # pragma no branch
+                if getattr(dec, attrname) == qs_name:  # pragma no branch
                     return True
             except AttributeError:
                 continue

@@ -18,6 +18,7 @@
 
 # pylint: disable=missing-docstring, no-self-use, no-self-argument
 
+import mongoengine as _me
 from mongoengine import Document
 from mongoengine.queryset import queryset_manager
 from mongomotor import Document as MMDocument
@@ -38,6 +39,13 @@ class TestDoc(Document):
 
     def do_update(self):
         type(self).objects.update(field='a')
+
+    @_me.queryset_manager
+    def other_qs(cls_doc, queryset):
+        return queryset
+
+    def do_other(self):
+        self.other_qs(field='value')
 
 
 class MMTestDoc(MMDocument):
