@@ -10,4 +10,4 @@ steps:
     warning_on_fail: true
 
   - name: Tests coverage
-    command: sh ./build-scripts/check_coverage.sh pylint mongoengine 100
+    command: sh ./build-scripts/check_coverage.sh pylint_mongoengine 100
