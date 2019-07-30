@@ -16,12 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from pylint.checkers.typecheck import TypeChecker
+from pylint.checkers.typecheck import TypeChecker, IterableChecker
 from pylint.checkers.utils import safe_infer
 from pylint_plugin_utils import suppress_message
 from pylint_mongoengine.utils import (name_is_from_qs, is_field_method,
                                       node_is_embedded_doc,
-                                      node_is_embedded_doc_attr)
+                                      node_is_embedded_doc_attr,
+                                      node_is_complex_field)
 
 
 def _is_custom_qs_manager(funcdef):
@@ -75,6 +76,25 @@ def _is_embedded_doc_attr(node):
     return False
 
 
+def _is_complex_field_for(node):
+    attr = list(node.get_children())[1]
+    r = node_is_complex_field(attr)
+    return r
+
+
+def _is_complex_field_compare(node):
+    r = False
+    op, right = node.ops[0]
+    r = node_is_complex_field(right)
+    return r
+
+
+def _is_complex_field_subscript(node):
+    attr = node.value
+    r = node_is_complex_field(attr)
+    return r
+
+
 def suppress_qs_decorator_messages(linter):
     suppress_message(linter, TypeChecker.visit_call, 'unexpected-keyword-arg',
                      _is_call2custom_manager)
@@ -89,3 +109,17 @@ def suppress_fields_attrs_messages(linter):
                      is_field_method)
     suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
                      _is_embedded_doc_attr)
+
+
+def suppress_fields_messages(linter):
+    suppress_message(linter, IterableChecker.visit_for,
+                     'not-an-iterable', _is_complex_field_for)
+
+    suppress_message(linter, TypeChecker.visit_compare,
+                     'unsupported-membership-test', _is_complex_field_compare)
+    suppress_message(linter, TypeChecker.visit_subscript,
+                     'unsupported-assignment-operation',
+                     _is_complex_field_subscript)
+    suppress_message(linter, TypeChecker.visit_subscript,
+                     'unsupported-delete-operation',
+                     _is_complex_field_subscript)

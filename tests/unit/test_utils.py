@@ -232,7 +232,7 @@ def test_node_is_doc_field_no_infer(mocker):
 
 test_doc_embedded_field = """
 from mongomotor import Document, EmbeddedDocument
-from mongomotor.fields import EmbeddedDocumentField
+from mongomotor.fields import EmbeddedDocumentField, MapField
 
 
 class Edoc(EmbeddedDocument):
@@ -256,6 +256,20 @@ class Doc(Document):
 
     def do_stuff(self):
         return self.other.meth()
+
+"""
+
+test_doc_complex_field = """
+from mongomotor import Document
+from mongomotor.fields import MapField, IntField
+
+class ComplexDoc(Document):
+    complex_field = MapField()
+    not_complex = IntField()
+
+    def fn(self):
+        self.complex_field
+        self.not_complex
 
 """
 
@@ -312,3 +326,20 @@ def test_node_is_embedded_doc_attr_true():
     r = utils.node_is_embedded_doc_attr(attr)
 
     assert r is True
+
+
+def test_node_is_complex_field_true():
+    m = astroid.parse(test_doc_complex_field)
+    attr = list(m.body[2].body[2].body[0].get_children())[0]
+    r = utils.node_is_complex_field(attr)
+
+    assert r is True
+
+
+def test_node_is_complex_field_false():
+    m = astroid.parse(test_doc_complex_field)
+    attr = list(m.body[2].body[2].body[1].get_children())[0]
+
+    r = utils.node_is_complex_field(attr)
+
+    assert r is False

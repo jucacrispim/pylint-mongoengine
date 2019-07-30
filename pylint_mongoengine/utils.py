@@ -41,8 +41,6 @@ def node_is_subclass(cls, *subclass_names):
     if not isinstance(cls, (ClassDef, Instance)):
         return False
 
-    # if cls.bases == YES:
-    #     return False
     for base_cls in cls.bases:
         try:
             for inf in base_cls.inferred():  # pragma no branch
@@ -150,4 +148,11 @@ def node_is_embedded_doc_attr(node):
     except IndexError:
         r = False
 
+    return r
+
+
+def node_is_complex_field(node):
+    cls_name = 'mongoengine.base.fields.ComplexBaseField'
+    inferred = safe_infer(node)
+    r = node_is_subclass(inferred, cls_name)
     return r
