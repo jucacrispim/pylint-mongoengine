@@ -84,7 +84,7 @@ def _is_complex_field_for(node):
 
 def _is_complex_field_compare(node):
     r = False
-    op, right = node.ops[0]
+    _, right = node.ops[0]
     r = node_is_complex_field(right)
     return r
 
