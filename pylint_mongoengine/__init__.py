@@ -19,7 +19,8 @@
 from pylint_mongoengine.checkers.mongoengine import MongoEngineChecker
 from pylint_mongoengine.suppression import (suppress_qs_decorator_messages,
                                             suppress_fields_attrs_messages,
-                                            suppress_fields_messages)
+                                            suppress_fields_messages,
+                                            suppress_doc_messages)
 from pylint_mongoengine.transforms import add_transform
 
 
@@ -27,9 +28,10 @@ def register(linter):
     """Add the needed transformations and supressions.
     """
 
+    # add_transform('mongoengine')
+    # add_transform('mongomotor')
     linter.register_checker(MongoEngineChecker(linter))
-    add_transform('mongoengine')
-    add_transform('mongomotor')
     suppress_qs_decorator_messages(linter)
     suppress_fields_attrs_messages(linter)
     suppress_fields_messages(linter)
+    suppress_doc_messages(linter)

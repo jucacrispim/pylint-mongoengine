@@ -5,6 +5,12 @@ from astroid.nodes import ClassDef
 from astroid.exceptions import InferenceError
 from pylint.checkers.utils import safe_infer
 
+DOCUMENT_BASES = ('mongomotor.Document',
+                  'mongoengine.Document',
+                  'mongoengine.document.Document',
+                  'mongomotor.document.Document')
+
+
 FIELD_TYPES = {'mongoengine.fields.StringField': str(),
                'mongoengine.fields.IntField': int(),
                'mongoengine.fields.FloatField': float(),
@@ -13,7 +19,7 @@ FIELD_TYPES = {'mongoengine.fields.StringField': str(),
 
 
 qs_names = set()
-model_names = set()
+document_names = set()
 
 
 def name_is_from_qs(attrname):
@@ -27,13 +33,15 @@ def name_is_from_qs(attrname):
 
 
 def name_is_from_model(attrname):
-    global model_names  # pylint: disable=global-statement
+    global document_names  # pylint: disable=global-statement
 
-    if not model_names:
+    if not document_names:
         from mongoengine import Document
-        model_names = set(dir(Document))
+        document_names = set(dir(Document))
+        # id is dynamically created
+        document_names.add('id')
 
-    return attrname in model_names
+    return attrname in document_names
 
 
 def node_is_subclass(cls, *subclass_names):
@@ -67,6 +75,16 @@ def node_is_instance(inst, *cls_names):
     if node_is_subclass(inst, *cls_names):
         return True
     return False
+
+
+def node_is_document(node):
+    """Checks if a node is a mongoengine document class.
+    """
+    return node_is_subclass(node, *DOCUMENT_BASES)
+
+
+def node_is_doc_instance(node):
+    return node_is_instance(node, *DOCUMENT_BASES)
 
 
 def node_is_doc_field(node):

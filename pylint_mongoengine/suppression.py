@@ -22,7 +22,9 @@ from pylint_plugin_utils import suppress_message
 from pylint_mongoengine.utils import (name_is_from_qs, is_field_method,
                                       node_is_embedded_doc,
                                       node_is_embedded_doc_attr,
-                                      node_is_complex_field)
+                                      node_is_complex_field,
+                                      node_is_document,
+                                      name_is_from_model)
 
 
 def _is_custom_qs_manager(funcdef):
@@ -95,6 +97,12 @@ def _is_complex_field_subscript(node):
     return r
 
 
+def _is_document_field(node):
+    """Checks if a node is a valid document field."""
+    inf = next(node.get_children()).inferred()[0]
+    return node_is_document(inf) and name_is_from_model(node.attrname)
+
+
 def suppress_qs_decorator_messages(linter):
     suppress_message(linter, TypeChecker.visit_call, 'unexpected-keyword-arg',
                      _is_call2custom_manager)
@@ -123,3 +131,8 @@ def suppress_fields_messages(linter):
     suppress_message(linter, TypeChecker.visit_subscript,
                      'unsupported-delete-operation',
                      _is_complex_field_subscript)
+
+
+def suppress_doc_messages(linter):
+    suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
+                     _is_document_field)

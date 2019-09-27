@@ -20,14 +20,11 @@ from pylint.checkers import BaseChecker
 from pylint.checkers.utils import check_messages, safe_infer
 from pylint.interfaces import IAstroidChecker
 
-from pylint_mongoengine.utils import (node_is_subclass, name_is_from_qs,
-                                      name_is_from_model)
-
-
-DOCUMENT_BASES = ('mongomotor.Document',
-                  'mongoengine.Document',
-                  'mongoengine.document.Document',
-                  'mongomotor.document.Document')
+from pylint_mongoengine.utils import (
+    name_is_from_qs,
+    name_is_from_model,
+    node_is_document
+)
 
 
 class MongoEngineChecker(BaseChecker):
@@ -56,9 +53,8 @@ class MongoEngineChecker(BaseChecker):
             return False
 
         base_cls = last_child.last_child()
-        base_classes = DOCUMENT_BASES
         for cls in base_cls.inferred():
-            if node_is_subclass(cls, *base_classes):
+            if node_is_document(cls):
                 return True
 
         return False
@@ -73,25 +69,24 @@ class MongoEngineChecker(BaseChecker):
     def visit_attribute(self, node):
         self.check_qs_name(node)
 
-    @check_messages('no-member')
-    def visit_call(self, node):
+    # @check_messages('no-member')
+    # def visit_call(self, node):
 
-        children = node.get_children()
+    #     children = node.get_children()
 
-        attr = next(children)
-        meth = safe_infer(attr)
-        if meth:
-            return False
+    #     attr = next(children)
+    #     meth = safe_infer(attr)
+    #     if meth:
+    #         return False
 
-        last_child = attr.last_child()
+    #     last_child = attr.last_child()
 
-        if last_child is None:
-            return False
+    #     if last_child is None:
+    #         return False
 
-        attr_self = safe_infer(last_child)
-        cls = getattr(attr_self, '_proxied', None)
+    #     attr_self = safe_infer(last_child)
+    #     cls = getattr(attr_self, '_proxied', None)
 
-        if node_is_subclass(cls, *DOCUMENT_BASES) and not name_is_from_model(
-                attr.attrname):
-            self.add_message('no-member', node=attr,
-                             args=('Document', cls.name, attr.attrname, ''))
+    #     if node_is_document(cls) and not name_is_from_model(attr.attrname):
+    #         self.add_message('no-member', node=attr,
+    #                          args=('Document', cls.name, attr.attrname, ''))

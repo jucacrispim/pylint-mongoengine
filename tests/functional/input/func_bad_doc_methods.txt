@@ -1,2 +1,2 @@
-no-member:28:TestDoc.bad_meth:Document 'TestDoc' has no 'a_bad_one' member
-no-member:37:MMTestDoc.bad_meth:Document 'MMTestDoc' has no 'a_bad_one' member
+no-member:28:TestDoc.bad_meth:Instance of 'TestDoc' has no 'a_bad_one' member:INFERENCE
+no-member:37:MMTestDoc.bad_meth:Instance of 'MMTestDoc' has no 'a_bad_one' member:INFERENCE

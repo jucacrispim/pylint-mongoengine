@@ -14,6 +14,7 @@ class PylintMongoEngineLintModuleTest(test_functional.LintModuleTest):
     """
         Only used so that we can load this plugin into the linter!
     """
+
     def __init__(self, test_file):
         super().__init__(test_file)
         self._linter.load_plugin_modules(['pylint_mongoengine'])

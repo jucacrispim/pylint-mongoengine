@@ -21,7 +21,7 @@ from unittest.mock import Mock
 import astroid
 
 from pylint_mongoengine import utils
-from pylint_mongoengine.checkers.mongoengine import DOCUMENT_BASES
+from pylint_mongoengine.utils import DOCUMENT_BASES
 
 
 def test_name_is_from_qs_true():
@@ -343,3 +343,11 @@ def test_node_is_complex_field_false():
     r = utils.node_is_complex_field(attr)
 
     assert r is False
+
+
+def test_node_is_doc_instance_true():
+    m = astroid.parse(test_no_doc_field)
+    attr = m.body[1].last_child().last_child().value.last_child().last_child()
+    parent = attr.last_child().inferred()[0]
+    r = utils.node_is_doc_instance(parent)
+    assert r is True

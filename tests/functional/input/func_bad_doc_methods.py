@@ -34,7 +34,7 @@ class TestDoc(Document):
 class MMTestDoc(MMDocument):
 
     async def bad_meth(self):
-        await self.a_bad_one(something=self.bla)  # [no-member]
+        await self.a_bad_one(something=self.id)  # [no-member]
 
     async def a_good_one(self):
         await self.bad_meth()

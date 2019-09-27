@@ -39,7 +39,7 @@ class TestMongoEngineChecker:
         r = self.checker._called_thru_default_qs(node)
         assert r is False
 
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
            Mock(return_value=False))
     def test_called_thru_default_qs_no_qs(self):
         node = Mock()
@@ -50,7 +50,7 @@ class TestMongoEngineChecker:
         r = self.checker._called_thru_default_qs(node)
         assert r is False
 
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
            Mock(return_value=True))
     def test_called_thru_default_qs_ok(self):
         node = Mock()
@@ -94,7 +94,7 @@ class TestMongoEngineChecker:
 
     @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
            Mock(side_effect=[None, Mock()]))
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
            Mock(return_value=False))
     def test_visit_call_no_subclass(self):
         node = MagicMock()
@@ -104,7 +104,7 @@ class TestMongoEngineChecker:
 
     @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
            Mock(side_effect=[None, Mock()]))
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
            Mock(return_value=True))
     @patch('pylint_mongoengine.checkers.mongoengine.name_is_from_model',
            Mock(return_value=True))
@@ -116,7 +116,7 @@ class TestMongoEngineChecker:
 
     @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
            Mock(side_effect=[None, Mock()]))
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_subclass',
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
            Mock(return_value=True))
     @patch('pylint_mongoengine.checkers.mongoengine.name_is_from_model',
            Mock(return_value=False))
