@@ -3,6 +3,8 @@
 from astroid.bases import Instance
 from astroid.nodes import ClassDef
 from astroid.exceptions import InferenceError
+from mongoengine import Document
+from mongoengine.queryset import QuerySet
 from pylint.checkers.utils import safe_infer
 
 DOCUMENT_BASES = ('mongomotor.Document',
@@ -26,7 +28,6 @@ def name_is_from_qs(attrname):
     global qs_names  # pylint: disable=global-statement
 
     if not qs_names:
-        from mongoengine.queryset import QuerySet
         qs_names = set(dir(QuerySet))
 
     return attrname in qs_names
@@ -36,12 +37,20 @@ def name_is_from_model(attrname):
     global document_names  # pylint: disable=global-statement
 
     if not document_names:
-        from mongoengine import Document
         document_names = set(dir(Document))
-        # id is dynamically created
+        # these attributes are dynamically created
         document_names.add('id')
+        document_names.add('objects')
+        document_names.add('DoesNotExist')
+        document_names.add('MultipleObjectsReturned')
 
     return attrname in document_names
+
+
+def name_is_doc_callable(attrname):
+    """Checks if a name is a callable in a document"""
+    is_call = callable(getattr(Document, attrname, None))
+    return name_is_from_model and is_call
 
 
 def node_is_subclass(cls, *subclass_names):
@@ -94,6 +103,20 @@ def node_is_doc_field(node):
 
     return node_is_instance(inferred, 'mongoengine.base.fields.BaseField',
                             'mongoengine.base.fields.ComplexBaseField')
+
+
+def node_is_default_qs(node):
+    # the default qs manager is called 'objects', we check for it here
+    attrname = getattr(node, 'attrname', None)
+    if attrname != 'objects':
+        return False
+
+    base_cls = node.last_child()
+    for cls in base_cls.inferred():
+        if node_is_document(cls):
+            return True
+
+    return False
 
 
 def is_field_method(node):
@@ -163,7 +186,7 @@ def node_is_embedded_doc_attr(node):
     name = node.attrname
     try:
         r = bool(embedded_doc.lookup(name)[1][0])
-    except IndexError:
+    except (IndexError, TypeError):
         r = False
 
     return r

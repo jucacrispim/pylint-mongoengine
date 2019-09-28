@@ -39,7 +39,7 @@ class TestMongoEngineChecker:
         r = self.checker._called_thru_default_qs(node)
         assert r is False
 
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
+    @patch('pylint_mongoengine.utils.node_is_document',
            Mock(return_value=False))
     def test_called_thru_default_qs_no_qs(self):
         node = Mock()
@@ -50,7 +50,7 @@ class TestMongoEngineChecker:
         r = self.checker._called_thru_default_qs(node)
         assert r is False
 
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
+    @patch('pylint_mongoengine.checkers.mongoengine.node_is_default_qs',
            Mock(return_value=True))
     def test_called_thru_default_qs_ok(self):
         node = Mock()
@@ -68,7 +68,7 @@ class TestMongoEngineChecker:
 
         assert self.checker.add_message.called is False
 
-    @patch('pylint_mongoengine.checkers.mongoengine.name_is_from_qs',
+    @patch('pylint_mongoengine.utils.name_is_from_qs',
            Mock(return_value=False))
     def test_visit_attribute_not_qs_name(self):
         self.checker._called_thru_default_qs = Mock(return_value=True)
@@ -85,43 +85,3 @@ class TestMongoEngineChecker:
         self.checker.visit_attribute(Mock())
 
         assert self.checker.add_message.called is False
-
-    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer', Mock())
-    def test_visit_call_good_infer(self):
-        node = MagicMock()
-        r = self.checker.visit_call(node)
-        assert r is False
-
-    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
-           Mock(side_effect=[None, Mock()]))
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
-           Mock(return_value=False))
-    def test_visit_call_no_subclass(self):
-        node = MagicMock()
-        self.checker.add_message = Mock()
-        self.checker.visit_call(node)
-        assert self.checker.add_message.called is False
-
-    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
-           Mock(side_effect=[None, Mock()]))
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
-           Mock(return_value=True))
-    @patch('pylint_mongoengine.checkers.mongoengine.name_is_from_model',
-           Mock(return_value=True))
-    def test_visit_call_good_name(self):
-        node = MagicMock()
-        self.checker.add_message = Mock()
-        self.checker.visit_call(node)
-        assert self.checker.add_message.called is False
-
-    @patch('pylint_mongoengine.checkers.mongoengine.safe_infer',
-           Mock(side_effect=[None, Mock()]))
-    @patch('pylint_mongoengine.checkers.mongoengine.node_is_document',
-           Mock(return_value=True))
-    @patch('pylint_mongoengine.checkers.mongoengine.name_is_from_model',
-           Mock(return_value=False))
-    def test_visit_call_subclass_bad_name(self):
-        node = MagicMock()
-        self.checker.add_message = Mock()
-        self.checker.visit_call(node)
-        assert self.checker.add_message.called is True

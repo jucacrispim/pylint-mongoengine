@@ -18,6 +18,7 @@
 
 from unittest.mock import Mock, MagicMock, patch
 
+import astroid
 from pylint_mongoengine import suppression
 
 
@@ -86,4 +87,21 @@ def test_is_embedded_doc_attr_false():
     node = MagicMock()
     r = suppression._is_embedded_doc_attr(node)
 
+    assert r is False
+
+
+call_of_call = """
+
+def afn(a):
+   return lambda: a
+
+afn('asdf')()
+"""
+
+
+def test_is_doc_call_false_call():
+    m = astroid.parse(call_of_call)
+    body = m.body
+    exp = body[1].last_child()
+    r = suppression._is_doc_call(exp)
     assert r is False

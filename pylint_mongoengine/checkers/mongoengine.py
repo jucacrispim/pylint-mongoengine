@@ -17,13 +17,12 @@
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
 from pylint.checkers import BaseChecker
-from pylint.checkers.utils import check_messages, safe_infer
+from pylint.checkers.utils import check_messages
 from pylint.interfaces import IAstroidChecker
 
 from pylint_mongoengine.utils import (
     name_is_from_qs,
-    name_is_from_model,
-    node_is_document
+    node_is_default_qs,
 )
 
 
@@ -46,18 +45,7 @@ class MongoEngineChecker(BaseChecker):
         last_child = node.last_child()
         if not last_child:
             return False
-
-        # the default qs manager is called 'objects', we check for it here
-        attrname = getattr(last_child, 'attrname', None)
-        if attrname != 'objects':
-            return False
-
-        base_cls = last_child.last_child()
-        for cls in base_cls.inferred():
-            if node_is_document(cls):
-                return True
-
-        return False
+        return node_is_default_qs(last_child)
 
     def check_qs_name(self, node):
         if self._called_thru_default_qs(node) and not name_is_from_qs(
@@ -68,25 +56,3 @@ class MongoEngineChecker(BaseChecker):
     @check_messages('no-member')
     def visit_attribute(self, node):
         self.check_qs_name(node)
-
-    # @check_messages('no-member')
-    # def visit_call(self, node):
-
-    #     children = node.get_children()
-
-    #     attr = next(children)
-    #     meth = safe_infer(attr)
-    #     if meth:
-    #         return False
-
-    #     last_child = attr.last_child()
-
-    #     if last_child is None:
-    #         return False
-
-    #     attr_self = safe_infer(last_child)
-    #     cls = getattr(attr_self, '_proxied', None)
-
-    #     if node_is_document(cls) and not name_is_from_model(attr.attrname):
-    #         self.add_message('no-member', node=attr,
-    #                          args=('Document', cls.name, attr.attrname, ''))

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2018 Juca Crispim <juca@poraodojuca.net>
+# Copyright 2019 Juca Crispim <juca@poraodojuca.net>
 
 # This file is part of pylint-mongoengine.
 
@@ -16,19 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-from mongoengine import Document as MEDocument
-from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
-from mongoengine.queryset.manager import QuerySetManager
+# pylint: disable=missing-docstring, too-few-public-methods
+# pylint: disable=no-self-use, no-self-argument
 
 
-class Document(MEDocument):  # pylint: disable=duplicate-code
-    _meta = {}
-    objects = QuerySetManager()
+from mongoengine import Document
 
-    id = None
-    pk = None
 
-    MultipleObjectsReturned = MultipleObjectsReturned
-    DoesNotExist = DoesNotExist
+class TestDoc(Document):
 
-    _data = {}
+    def try_get(self):
+        try:
+            obj = TestDoc.objects.get(bla='ble')
+        except TestDoc.DoesNotExist:
+            obj = None
+        return obj

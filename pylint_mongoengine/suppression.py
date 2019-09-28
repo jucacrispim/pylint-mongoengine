@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
+from astroid.exceptions import InferenceError
 from pylint.checkers.typecheck import TypeChecker, IterableChecker
 from pylint.checkers.utils import safe_infer
 from pylint_plugin_utils import suppress_message
@@ -24,7 +25,9 @@ from pylint_mongoengine.utils import (name_is_from_qs, is_field_method,
                                       node_is_embedded_doc_attr,
                                       node_is_complex_field,
                                       node_is_document,
-                                      name_is_from_model)
+                                      name_is_from_model,
+                                      node_is_default_qs,
+                                      name_is_doc_callable)
 
 
 def _is_custom_qs_manager(funcdef):
@@ -99,8 +102,31 @@ def _is_complex_field_subscript(node):
 
 def _is_document_field(node):
     """Checks if a node is a valid document field."""
-    inf = next(node.get_children()).inferred()[0]
+    try:
+        inf = next(node.get_children()).inferred()[0]
+    except InferenceError:
+        return False
     return node_is_document(inf) and name_is_from_model(node.attrname)
+
+
+def _is_doc_call(node):
+    """Checks if node is a valid callable for a document.
+    """
+    call_node = next(node.get_children())
+    call_name = getattr(call_node, 'attrname', None) or getattr(
+        call_node, 'name', None)
+    if not call_name:
+        return False
+    # if is a doc call this is a doc
+    maybe_doc = node.last_child().last_child()
+    if not maybe_doc:
+        return False
+    try:
+        doc_node = maybe_doc.inferred()[0]
+    except InferenceError:
+        return False
+
+    return node_is_document(doc_node) and name_is_doc_callable(call_name)
 
 
 def suppress_qs_decorator_messages(linter):
@@ -136,3 +162,7 @@ def suppress_fields_messages(linter):
 def suppress_doc_messages(linter):
     suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
                      _is_document_field)
+    suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
+                     node_is_default_qs)
+    suppress_message(linter, TypeChecker.visit_call, 'not-callable',
+                     _is_doc_call)
