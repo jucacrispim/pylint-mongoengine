@@ -11,7 +11,7 @@ setup(
     author_email='juca@poraodojuca.net',
     description=DESCRIPTION,
     long_description=DESCRIPTION,
-    version='0.3.3',
+    version='0.4.0',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
