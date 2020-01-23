@@ -15,7 +15,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'pylint>=2.0', 'pylint-plugin-utils>=0.5'
+        'pylint==2.3.1', 'pylint-plugin-utils==0.5'
     ],
     license='GPLv3',
     classifiers=[
