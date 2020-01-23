@@ -5,6 +5,9 @@ versions:
   - '3.7'
   - '3.8'
 
+envvars:
+  - PYTHONPATH: '.'
+
 steps:
   - name: Run pylint
     command: pylint pylint_mongoengine
