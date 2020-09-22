@@ -22,3 +22,12 @@ From the command line use the ``--load-plugins`` parameter:
 ```
 
 or add ``load-plugins=pylint_mongoengine`` to your pylintrc file
+
+#### How to use in VS-Code:
+Open the Command Palette (⇧⌘P), then type `Preferences: Configure Language Specific Settings`, select Python and add the following code:
+
+```json
+"python.linting.pylintArgs": [
+  "--load-plugins=pylint-mongoengine"
+]
+```
