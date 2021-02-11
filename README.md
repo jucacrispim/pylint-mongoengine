@@ -28,6 +28,6 @@ Open the Command Palette (⇧⌘P), then type `Preferences: Configure Language S
 
 ```json
 "python.linting.pylintArgs": [
-  "--load-plugins=pylint-mongoengine"
+  "--load-plugins=pylint_mongoengine"
 ]
 ```
