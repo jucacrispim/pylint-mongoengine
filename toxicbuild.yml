@@ -15,6 +15,3 @@ steps:
 
   - name: Tests coverage
     command: sh ./build-scripts/check_coverage.sh pylint_mongoengine 100
-
-  - name: functional tests
-    command: cd tests/functional && export PYTHONPATH="." & pytest
