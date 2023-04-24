@@ -12,7 +12,7 @@ mccabe==0.7.0
 mongoengine==0.27.0
 mongomotor==0.16.0
 more-itertools==9.1.0
-motor==2.1.0
+motor==3.1.1
 parso==0.8.3
 pexpect==4.8.0
 pickleshare==0.7.5
