@@ -20,7 +20,7 @@ from astroid.exceptions import InferenceError
 from pylint.checkers.typecheck import TypeChecker, IterableChecker
 from pylint.checkers.utils import safe_infer
 from pylint_plugin_utils import suppress_message
-from pylint_mongoengine.utils import (name_is_from_qs, is_field_method,
+from pylint_mongoengine.utils import (name_is_from_qs,
                                       node_is_embedded_doc,
                                       node_is_embedded_doc_attr,
                                       node_is_complex_field,
@@ -139,8 +139,6 @@ def suppress_qs_decorator_messages(linter):
 
 
 def suppress_fields_attrs_messages(linter):
-    suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
-                     is_field_method)
     suppress_message(linter, TypeChecker.visit_attribute, 'no-member',
                      _is_embedded_doc_attr)
 

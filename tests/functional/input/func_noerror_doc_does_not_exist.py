@@ -17,7 +17,7 @@
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
 # pylint: disable=missing-docstring, too-few-public-methods
-# pylint: disable=no-self-use, no-self-argument
+# pylint: disable=no-self-argument
 
 
 from mongoengine import Document

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable=missing-docstring, no-self-use, no-self-argument
+# pylint: disable=missing-docstring, no-self-argument
 
 import mongoengine as _me
 from mongoengine import Document

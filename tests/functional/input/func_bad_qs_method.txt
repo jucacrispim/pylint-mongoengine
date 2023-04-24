@@ -1,4 +1,4 @@
-no-member:34:TestDoc.a_bad_qs_method:Method 'custom_qs_manager' has no 'bad_method' member:INFERENCE
-no-member:40:AnotherTestDoc.a_bad_qs_method:QuerySet instance 'objects' has no 'bad_method' member
-no-member:50:MMTestDoc.a_bad_qs_method:Method 'custom_qs_manager' has no 'bad_method' member:INFERENCE
-no-member:56:AnotherMMTestDoc.a_bad_qs_method:QuerySet instance 'objects' has no 'bad_method' member
+no-member:34:15:34:54:TestDoc.a_bad_qs_method:Method 'custom_qs_manager' has no 'bad_method' member:INFERENCE
+no-member:40:15:40:44:AnotherTestDoc.a_bad_qs_method:QuerySet instance 'objects' has no 'bad_method' member:UNDEFINED
+no-member:50:15:50:54:MMTestDoc.a_bad_qs_method:Method 'custom_qs_manager' has no 'bad_method' member:INFERENCE
+no-member:56:15:56:44:AnotherMMTestDoc.a_bad_qs_method:QuerySet instance 'objects' has no 'bad_method' member:UNDEFINED

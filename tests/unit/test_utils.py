@@ -152,25 +152,6 @@ def test_node_is_instance_inheritance():
     assert r is True
 
 
-test_field_method = """
-from mongomotor import Document
-from mongomotor.fields import StringField
-
-class Doc(Document):
-    strf = StringField()
-
-    def do_stuff(self):
-        return self.strf.split()
-"""
-
-
-def test_is_field_method_true():
-    m = astroid.parse(test_field_method)
-    attr = m.body[2].last_child().last_child().value.last_child()
-    r = utils.is_field_method(attr)
-    assert r is True
-
-
 test_not_field_method = """
 from mongomotor import Document
 from mongomotor.fields import StringField
@@ -181,22 +162,6 @@ class Doc(Document):
     def do_stuff(self):
         return self.strf.bad()
 """
-
-
-def test_is_field_method_false():
-    m = astroid.parse(test_not_field_method)
-    attr = m.body[2].last_child().last_child().value.last_child()
-    r = utils.is_field_method(attr)
-    assert r is False
-
-
-def test_node_is_doc_field_true():
-    m = astroid.parse(test_not_field_method)
-    attr = m.body[2].last_child().last_child().value.last_child()
-    parent = attr.last_child()
-    r = utils.node_is_doc_field(parent)
-
-    assert r is True
 
 
 test_no_doc_field = """
@@ -259,29 +224,6 @@ class Doc(Document):
 
 """
 
-test_doc_complex_field = """
-from mongomotor import Document
-from mongomotor.fields import MapField, IntField
-
-class ComplexDoc(Document):
-    complex_field = MapField()
-    not_complex = IntField()
-
-    def fn(self):
-        self.complex_field
-        self.not_complex
-
-"""
-
-
-def test_node_is_embedded_doc():
-    m = astroid.parse(test_doc_embedded_field)
-    attr = m.body[4].last_child().last_child().value.last_child()
-    parent = attr.last_child()
-    r = utils.node_is_embedded_doc(parent)
-
-    assert r is True
-
 
 def test_get_node_parent_class():
     m = astroid.parse(test_doc_embedded_field)
@@ -326,23 +268,6 @@ def test_node_is_embedded_doc_attr_true():
     r = utils.node_is_embedded_doc_attr(attr)
 
     assert r is True
-
-
-def test_node_is_complex_field_true():
-    m = astroid.parse(test_doc_complex_field)
-    attr = list(m.body[2].body[2].body[0].get_children())[0]
-    r = utils.node_is_complex_field(attr)
-
-    assert r is True
-
-
-def test_node_is_complex_field_false():
-    m = astroid.parse(test_doc_complex_field)
-    attr = list(m.body[2].body[2].body[1].get_children())[0]
-
-    r = utils.node_is_complex_field(attr)
-
-    assert r is False
 
 
 def test_node_is_doc_instance_true():

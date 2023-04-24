@@ -7,10 +7,11 @@ import sys
 
 import pytest
 
-from pylint.test import test_functional
+from pylint.testutils.lint_module_test import LintModuleTest
+from pylint.testutils import functional
 
 
-class PylintMongoEngineLintModuleTest(test_functional.LintModuleTest):
+class PylintMongoEngineLintModuleTest(LintModuleTest):
     """
         Only used so that we can load this plugin into the linter!
     """
@@ -30,7 +31,7 @@ def get_tests(input_dir='input', sort=False):
     suite = []
     for fname in os.listdir(input_dir):
         if fname != '__init__.py' and fname.endswith('.py'):
-            suite.append(test_functional.FunctionalTestFile(input_dir, fname))
+            suite.append(functional.FunctionalTestFile(input_dir, fname))
 
     return suite
 

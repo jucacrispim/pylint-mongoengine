@@ -4,17 +4,17 @@ echo "\nChecking coverage for Python code\n"
 
 export PYTHONPATH=$PYTHONPATH:tests/functional/;
 
-OUT=`pytest --cov=$1`;
+OUT=`pytest --cov=pylint_mongoengine`;
 
 coverage=`echo "$OUT" | grep TOTAL | sed 's/TOTAL\s*\w*\s*\w*\s*\w*\s*\w\s*//g' | cut -d'%' -f1`;
 
 ERROR=`echo "$OUT" | egrep 'Failed|FAILURE'`
 
 echo 'coverage was:' $coverage'%'
-
+threshold=100
 if [ "$ERROR" != "" ]
 then
-    if [ $coverage -eq $2 ]
+    if [ $coverage -eq $threshold ]
     then
 	echo "But something went wrong";
 	echo "$OUT";
@@ -27,7 +27,7 @@ then
     fi
 fi
 
-if [ $coverage -eq $2 ]
+if [ $coverage -eq $threshold ]
 then
     echo "Yay! Everything ok!";
     exit 0;
