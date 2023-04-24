@@ -276,3 +276,12 @@ def test_node_is_doc_instance_true():
     parent = attr.last_child().inferred()[0]
     r = utils.node_is_doc_instance(parent)
     assert r is True
+
+
+def test_node_is_default_qs_with_inferrece_error():
+    node = Mock()
+    node.attrname = 'objects'
+    node.last_child.return_value.inferred.side_effect = utils.InferenceError
+
+    r = utils.node_is_default_qs(node)
+    assert r is False

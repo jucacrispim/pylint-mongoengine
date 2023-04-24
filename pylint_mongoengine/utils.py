@@ -112,9 +112,12 @@ def node_is_default_qs(node):
         return False
 
     base_cls = node.last_child()
-    for cls in base_cls.inferred():
-        if node_is_document(cls):
-            return True
+    try:
+        for cls in base_cls.inferred():
+            if node_is_document(cls):
+                return True
+    except InferenceError:
+        return False
 
     return False
 
