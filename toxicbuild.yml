@@ -7,6 +7,9 @@ versions:
 envvars:
   PYTHONPATH: '.'
 
+system_packages:
+  - build-essential
+
 steps:
   - name: Run pylint
     command: pylint pylint_mongoengine
