@@ -22,7 +22,6 @@ try:
 except ImportError:
     # Pylint versions <3.0.0 can use the `check_messages` fn instead
     from pylint.checkers.utils import check_messages as only_required_for_messages
-from pylint.interfaces import IAstroidChecker
 
 from pylint_mongoengine.utils import (
     name_is_from_qs,
@@ -31,8 +30,6 @@ from pylint_mongoengine.utils import (
 
 
 class MongoEngineChecker(BaseChecker):
-
-    __implements__ = IAstroidChecker
 
     name = 'mongoengine-checker'
 
