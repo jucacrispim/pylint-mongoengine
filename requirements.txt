@@ -23,7 +23,7 @@ pycodestyle==2.10.0
 pyflakes==3.0.1
 pylint==2.17.2
 pylint-plugin-utils==0.7
-pymongo==4.3.3
+pymongo==4.6.3
 pytest==7.3.1
 pytest-cov==2.8.1
 pytest-mock==3.10.0
