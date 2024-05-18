@@ -15,6 +15,7 @@ branches:
   - 'feature-*'
   - 'bug-*'
   - 'refactor-*'
+  - 'merge-*'
 
 steps:
   - name: Run pylint
