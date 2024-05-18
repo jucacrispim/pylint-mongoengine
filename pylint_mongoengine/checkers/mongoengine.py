@@ -17,8 +17,7 @@
 # along with pylint-mongoengine. If not, see <http://www.gnu.org/licenses/>.
 
 from pylint.checkers import BaseChecker
-from pylint.checkers.utils import check_messages
-from pylint.interfaces import IAstroidChecker
+from pylint.checkers.utils import only_required_for_messages
 
 from pylint_mongoengine.utils import (
     name_is_from_qs,
@@ -27,8 +26,6 @@ from pylint_mongoengine.utils import (
 
 
 class MongoEngineChecker(BaseChecker):
-
-    __implements__ = IAstroidChecker
 
     name = 'mongoengine-checker'
 
@@ -53,6 +50,6 @@ class MongoEngineChecker(BaseChecker):
             self.add_message('no-member', node=node, args=(
                 'QuerySet instance', 'objects', node.attrname, ''))
 
-    @check_messages('no-member')
+    @only_required_for_messages('no-member')
     def visit_attribute(self, node):
         self.check_qs_name(node)
