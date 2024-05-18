@@ -10,6 +10,12 @@ envvars:
 system_packages:
   - build-essential
 
+branches:
+  - master
+  - 'feature-*'
+  - 'bug-*'
+  - 'refactor-*'
+
 steps:
   - name: Run pylint
     command: pylint pylint_mongoengine
