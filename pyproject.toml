@@ -15,8 +15,8 @@ description = "A Pylint plugin to help it understand MongoEngine"
 readme = "README.md"
 
 dependencies = [
-    'pylint>=2.3.1',
-    'pylint-plugin-utils>=0.5'
+    'pylint>=3.2.0',
+    'pylint-plugin-utils>=0.8.2'
 ]
 
 classifiers = [
