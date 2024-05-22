@@ -8,7 +8,7 @@ Install
 Install it using pip:
 
 ```sh
-   $ pip install pylint-mongoengine
+   $ pip install pylint-mongoengine --extra-index-url=https://pypi.poraodojuca.dev
 ```
 
 
